@@ -1,0 +1,7 @@
+bcrypt
+wget
+python-dotenv
+asyncio
+mysql-connector-python
+colorama
+getpass
