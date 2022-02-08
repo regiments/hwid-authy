@@ -8,6 +8,7 @@ import mysql.connector
 import getpass
 from colorama import Fore, init
 import bcrypt
+import winreg
 init()
 load_dotenv()
 
@@ -23,28 +24,24 @@ account = {}
 
 
 ### FUNCTIONS ###
-async def downloadHwidGetter():
-    if os.path.exists(path + '/' + os.path.basename(url)):
-        os.remove(path + '/' + os.path.basename(url)) # if exist, remove it directly
-        wget.download(url, out=path + '/' + os.path.basename(url)) # download it to the specific path.
-        os.system('cls')       
-    else:
-        wget.download(url, out=path + '/' + os.path.basename(url)) # download it to the specific path.      
-        os.system('cls')     
-
 async def main():
-        await downloadHwidGetter()
-        hwid = subprocess.check_output("main")
-        hwid = hwid.decode('utf-8')
-        uuid = subprocess.check_output('wmic csproduct get uuid').decode().split('\n')[1].strip()
-        if len(hwid) != 36:
-            print(Fore.RED + 'Error: Invalid HWID | If this persists then please contact callum.')
-            input('Press enter to exit.')
-            await RegLogPage()
-        else:
-            importance['hwid'] = hwid
-            importance['uuid'] = uuid
-            await RegLogPage()
+    key = winreg.OpenKey(
+    winreg.HKEY_LOCAL_MACHINE,
+    "SOFTWARE\\Microsoft\\Cryptography",
+    0,
+    winreg.KEY_READ | winreg.KEY_WOW64_64KEY
+)
+    result = winreg.QueryValueEx(key, "MachineGuid")
+    hwid = result[0]
+    uuid = subprocess.check_output('wmic csproduct get uuid').decode().split('\n')[1].strip()
+    if len(hwid) != 36:
+        print(Fore.RED + 'Error: Invalid HWID | If this persists then please contact callum.')
+        input('Press enter to exit.')
+        await RegLogPage()
+    else:
+        importance['hwid'] = hwid
+        importance['uuid'] = uuid
+        await RegLogPage()
 
 async def RegLogPage():
     os.system("mode con cols=110 lines=37")
