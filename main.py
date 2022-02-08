@@ -13,8 +13,6 @@ init()
 load_dotenv()
 
 ### VARIABLES ###
-url = "https://callum.systems/main.exe"
-path = os.path.dirname(os.path.abspath(__file__))
 database = mysql.connector.connect(host=os.getenv('SQL_HOST'), user=os.getenv('SQL_USER'), passwd=os.getenv('SQL_PASSWORD'), database=os.getenv('SQL_DATABASE'))
 mysql = database.cursor()
 importance = {}
@@ -150,8 +148,4 @@ async def LoggedInPage():
       
 ### MAIN ###
 if __name__ == "__main__":
-    if os.path.exists(path + '/' + os.path.basename(url)):
-        os.remove(path + '/' + os.path.basename(url))
-        asyncio.run(main())
-    else:
-        asyncio.run(main())
+    asyncio.run(main())
